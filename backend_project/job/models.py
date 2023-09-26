@@ -72,7 +72,7 @@ class Job(models.Model):
     def save(self, *args, **kwargs):
         # key = os.environ.get('GEOCODER_API')
         # g = geocoder.mapquest(self.address, key=key)
-        lng = '7.111871025247023' #g.lng
-        lat = '-73.12930715480337' #g.lat
+        lng = '9.111871025247023' #g.lng
+        lat = '-93.12930715480337' #g.lat
         self.point = Point(lng, lat)
         super(Job, self).save(*args, **kwargs)
