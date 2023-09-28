@@ -1,8 +1,8 @@
 from datetime import *
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.contrib.gis.db import models as gismodels
-from django.contrib.gis.geos import Point
+# from django.contrib.gis.db import models as gismodels
+# from django.contrib.gis.geos import Point
 from django.contrib.auth.models import User
 import geocoder
 import os
@@ -64,7 +64,8 @@ class Job(models.Model):
     salary = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(1000000000)])
     positions = models.IntegerField(default=1)
     company = models.CharField(max_length=100, null=True)
-    point = gismodels.PointField(default=Point(0.0, 0.0))
+    point_lat = models.FloatField(null=True, blank=True)
+    point_long = models.FloatField(null=True, blank=True)
     lastDate = models.DateTimeField(default=return_Date_time)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     createdAt = models.DateTimeField(auto_now_add=True)
@@ -72,7 +73,10 @@ class Job(models.Model):
     def save(self, *args, **kwargs):
         key = os.environ.get('GEOCODER_API')
         g = geocoder.mapquest(self.address, key=key)
-        lng = g.lng
-        lat = g.lat
-        self.point = Point(lng, lat)
+        lat = g.lng
+        lng = g.lat
+        print("************",lat)
+        print("************",lng)
+        self.point_lat = round(lat, 7)
+        self.point_long = round(lng, 7)
         super(Job, self).save(*args, **kwargs)

@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 'rest_framework',
-    # 'corsheaders',
-    # 'storages',
-    # 'django_filters',
-    'django.contrib.gis',
+    'rest_framework',
+    'corsheaders',
+    'storages',
+    'django_filters',
+    # 'django.contrib.gis',
 
     'job.apps.JobConfig',
 ]
@@ -85,9 +85,14 @@ WSGI_APPLICATION = 'backend_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
+        'ENGINE': 'django.db.backends.sqlite3',
+        # 'ENGINE': 'django.contrib.gis.db.backends.spatialite',
         'NAME': BASE_DIR / 'db.sqlite3',
+        # 'NAME': os.environ.get('DATABASE_NAME'),
+        # 'USER': os.environ.get('DATABASE_USER'),
+        # 'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        # 'PORT': os.environ.get('DATABASE_PORT'),
+        # 'HOST': os.environ.get('DATABASE_HOST'),
     }
 }
 
@@ -133,6 +138,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-VIRTUAL_ENV_BASE = os.environ.get('VIRTUAL_ENV')
-GEOS_LIBRARY_PATH = VIRTUAL_ENV_BASE + '\Lib\site-packages\osgeo\geos_c.dll'
-GDAL_LIBRARY_PATH = VIRTUAL_ENV_BASE + '\Lib\site-packages\osgeo\gdal304.dll'
+# VIRTUAL_ENV_BASE = os.environ.get('VIRTUAL_ENV')
+# GEOS_LIBRARY_PATH = VIRTUAL_ENV_BASE + '\Lib\site-packages\osgeo\geos_c.dll'
+# GDAL_LIBRARY_PATH = VIRTUAL_ENV_BASE + '\Lib\site-packages\osgeo\gdal304.dll'
