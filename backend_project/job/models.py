@@ -25,7 +25,7 @@ class Industry(models.TextChoices):
     Telecomunications = 'Telecomunications'
     Others = 'Others'
 
-class Experience(models.Model):
+class Experience(models.TextChoices):
     NO_EXPERIENCE = 'NO_EXPERIENCE'
     ONE_YEAR = 'ONE_YEAR'
     TWO_YEAR = 'TWO_YEAR'
@@ -70,9 +70,9 @@ class Job(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        # key = os.environ.get('GEOCODER_API')
-        # g = geocoder.mapquest(self.address, key=key)
-        lng = '9.111871025247023' #g.lng
-        lat = '-93.12930715480337' #g.lat
+        key = os.environ.get('GEOCODER_API')
+        g = geocoder.mapquest(self.address, key=key)
+        lng = g.lng
+        lat = g.lat
         self.point = Point(lng, lat)
         super(Job, self).save(*args, **kwargs)

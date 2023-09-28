@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     # 'corsheaders',
     # 'storages',
     # 'django_filters',
-    # 'django.contrib.gis',
+    'django.contrib.gis',
 
     'job.apps.JobConfig',
 ]
@@ -85,7 +85,8 @@ WSGI_APPLICATION = 'backend_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
@@ -131,3 +132,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+VIRTUAL_ENV_BASE = os.environ.get('VIRTUAL_ENV')
+GEOS_LIBRARY_PATH = VIRTUAL_ENV_BASE + '\Lib\site-packages\osgeo\geos_c.dll'
+GDAL_LIBRARY_PATH = VIRTUAL_ENV_BASE + '\Lib\site-packages\osgeo\gdal304.dll'
