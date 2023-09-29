@@ -73,8 +73,8 @@ class Job(models.Model):
     def save(self, *args, **kwargs):
         key = os.environ.get('GEOCODER_API')
         g = geocoder.mapquest(self.address, key=key)
-        lat = g.lng
-        lng = g.lat
+        lat = g.lat
+        lng = g.lng
         print("************",lat)
         print("************",lng)
         self.point_lat = round(lat, 7)
