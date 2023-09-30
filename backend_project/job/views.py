@@ -4,12 +4,14 @@ from .serializers import JobSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Count, Avg, Min, Max
+from .filters import JobFilter
 
 class GetAllJobs(APIView):
 
     def get(self, request):
-        jobs = Job.objects.all()
-        serializer = JobSerializer(jobs, many=True)
+        # jobs = Job.objects.all()
+        filterset = JobFilter(request.GET, queryset=Job.objects.all().order_by('id'))
+        serializer = JobSerializer(filterset.qs, many=True)
         return Response(serializer.data)
 
 class GetJobByID(APIView):
@@ -69,5 +71,4 @@ class StatsPerTopic(APIView):
             min_salary = Min('salary'),
             max_salary = Max('salary')
         )
-        print("*******", stats)
         return Response({'stats': stats}, status=status.HTTP_200_OK)
