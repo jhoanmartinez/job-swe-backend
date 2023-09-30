@@ -3,6 +3,7 @@ from .models import Job
 from .serializers import JobSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Count, Avg, Min, Max
 
 class GetAllJobs(APIView):
 
@@ -53,3 +54,20 @@ class DeleteJob(APIView):
             return Response( {'message': 'Job not exist'}, status=status.HTTP_404_NOT_FOUND )
         job.delete()
         return Response( {'message': 'Job deleted succesfully'}, status=status.HTTP_204_NO_CONTENT )
+
+class StatsPerTopic(APIView):
+
+    def get(self,request, topic):
+        args = {'title__icontains': topic}
+        jobs = Job.objects.filter(**args)
+        if len(jobs) == 0:
+            return Response({'message': f'No stats found for topic {topic}'})
+        stats = jobs.aggregate(
+            total_jobs = Count('title'),
+            avg_positions = Avg('positions'),
+            avg_salary = Avg('salary'),
+            min_salary = Min('salary'),
+            max_salary = Max('salary')
+        )
+        print("*******", stats)
+        return Response({'stats': stats}, status=status.HTTP_200_OK)
