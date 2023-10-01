@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     # 'django.contrib.gis',
 
     'job.apps.JobConfig',
-    'account.apps.AcoountConfig',
+    'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
@@ -120,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 
