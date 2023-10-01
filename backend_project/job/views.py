@@ -5,14 +5,24 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Count, Avg, Min, Max
 from .filters import JobFilter
+from rest_framework.pagination import PageNumberPagination
 
 class GetAllJobs(APIView):
 
     def get(self, request):
         # jobs = Job.objects.all()
         filterset = JobFilter(request.GET, queryset=Job.objects.all().order_by('id'))
-        serializer = JobSerializer(filterset.qs, many=True)
-        return Response(serializer.data)
+        count = filterset.qs.count()
+        resPerPage = 2
+        paginator = PageNumberPagination()
+        paginator.page_size = resPerPage
+        queryset = paginator.paginate_queryset(filterset.qs, request)
+        serializer = JobSerializer(queryset, many=True)
+        return Response({
+            'count': count,
+            'resPerPage': resPerPage,
+            'jobs': serializer.data,
+            })
 
 class GetJobByID(APIView):
 
