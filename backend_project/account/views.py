@@ -10,4 +10,22 @@ from django.contrib.auth.models import User
 class Register(APIView):
 
     def post(self, request):
-        print(request)
+        data = request.data
+        user = SignUpSerializer(data=data)
+        if user.is_valid():
+            if not User.objects.filter(username=data['email']).exists():
+                user = User.objects.create(
+                    first_name = data['first_name'],
+                    last_name = data['last_name'],
+                    username = data['email'],
+                    email = data['email'],
+                    password = make_password(data['password'])
+                )
+                return Response({'message': 'User created'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({
+                    'error': 'User already exists'},
+                    status=status.HTTP_400_BAD_REQUEST
+                    )
+        else:
+            return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
