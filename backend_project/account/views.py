@@ -5,6 +5,7 @@ from rest_framework import status
 from django.contrib.auth.hashers import make_password
 from .serializers import SignUpSerializer, UserSerializer
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
 
 
 class Register(APIView):
@@ -29,3 +30,13 @@ class Register(APIView):
                     )
         else:
             return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class CurrentUser(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = UserSerializer(request.user)
+        return Response(user.data, status=status.HTTP_200_OK)
+
+
+
