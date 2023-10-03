@@ -32,6 +32,7 @@ class Register(APIView):
             return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class CurrentUser(APIView):
+    
     permission_classes = [IsAuthenticated]
 
     def get(self, request):

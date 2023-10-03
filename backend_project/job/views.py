@@ -6,9 +6,11 @@ from rest_framework import status
 from django.db.models import Count, Avg, Min, Max
 from .filters import JobFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 
 class GetAllJobs(APIView):
-
+    
     def get(self, request):
         # jobs = Job.objects.all()
         filterset = JobFilter(request.GET, queryset=Job.objects.all().order_by('id'))
@@ -32,12 +34,14 @@ class GetJobByID(APIView):
             serializer = JobSerializer(job)
             return Response(serializer.data)
         except Job.DoesNotExist:
-            return Response({"message": "El trabajo no existe"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Job not exists"}, status=status.HTTP_404_NOT_FOUND)
 
 class PostJob(APIView):
-
+    
+    permission_classes = [IsAuthenticated]
+    
     def post(self, request):
-        print(request.data)
+        request.data['user'] = request.user
         serializer = JobSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -45,10 +49,14 @@ class PostJob(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UpdateJob(APIView):
-
+    
+    permission_classes = [IsAuthenticated]
+   
     def patch(self, request, job_id):
         try:
             job = Job.objects.get(id=job_id)
+            if job.user != request.user:
+                return Response({'message': 'You can not update this job'}, status=status.HTTP_403_FORBIDDEN)
         except Job.DoesNotExist:
             return Response( {'message': 'Job not exist'}, status=status.HTTP_404_NOT_FOUND )
         serializer = JobSerializer(job, data=request.data, partial=True)
@@ -59,16 +67,20 @@ class UpdateJob(APIView):
 
 class DeleteJob(APIView):
 
+    permission_classes = [IsAuthenticated]
+    
     def delete(self, request, job_id):
         try:
             job = Job.objects.get(id=job_id)
+            if job.user != request.user:
+                return Response({'message': 'You can not delete this job'}, status=status.HTTP_403_FORBIDDEN)
         except Job.DoesNotExist:
             return Response( {'message': 'Job not exist'}, status=status.HTTP_404_NOT_FOUND )
         job.delete()
         return Response( {'message': 'Job deleted succesfully'}, status=status.HTTP_204_NO_CONTENT )
 
 class StatsPerTopic(APIView):
-
+    
     def get(self,request, topic):
         args = {'title__icontains': topic}
         jobs = Job.objects.filter(**args)

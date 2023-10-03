@@ -70,13 +70,15 @@ class Job(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     createdAt = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        id = str(self.id)
+        return str(id + "." + self.title)
+
     def save(self, *args, **kwargs):
         key = os.environ.get('GEOCODER_API')
         g = geocoder.mapquest(self.address, key=key)
         lat = g.lat
         lng = g.lng
-        print("************",lat)
-        print("************",lng)
         self.point_lat = round(lat, 7)
         self.point_long = round(lng, 7)
         super(Job, self).save(*args, **kwargs)
