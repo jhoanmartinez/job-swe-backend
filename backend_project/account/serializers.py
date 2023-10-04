@@ -16,6 +16,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     resume = serializers.CharField(source='userprofile.resume')
+    password = serializers.CharField(write_only=True)
     class Meta:
         model = User
-        fields =  ('first_name', 'last_name', 'email', 'username', 'resume')
+        fields =  ('first_name', 'last_name', 'email', 'username', 'resume', 'password')

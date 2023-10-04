@@ -39,5 +39,21 @@ class CurrentUser(APIView):
         user = UserSerializer(request.user)
         return Response(user.data, status=status.HTTP_200_OK)
 
+class UpdateUser(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        user = User.objects.get(username=request.user)
+        mutable_data = request.data.copy()
+        if 'password' in mutable_data and mutable_data['password'] != '':
+            mutable_data['password'] = make_password(mutable_data['password'])
+        serializer = UserSerializer(user, data=mutable_data, many=False, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'message': "Error updated"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
