@@ -24,10 +24,11 @@ class Register(APIView):
                 )
                 return Response({'message': 'User created'}, status=status.HTTP_201_CREATED)
             else:
-                return Response({
-                    'error': 'User already exists'},
-                    status=status.HTTP_400_BAD_REQUEST
-                    )
+                return Response(
+                    {
+                        'error': 'User already exists'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
         
