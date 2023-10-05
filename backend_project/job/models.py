@@ -82,3 +82,9 @@ class Job(models.Model):
         self.point_lat = round(lat, 7)
         self.point_long = round(lng, 7)
         super(Job, self).save(*args, **kwargs)
+
+class CandidateApplied(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    resume = models.CharField(max_length=200)
+    applieadAt = models.DateTimeField(auto_now_add=True)

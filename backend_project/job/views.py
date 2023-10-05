@@ -8,6 +8,7 @@ from .filters import JobFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticated
+from .models import CandidateApplied
 
 class GetAllJobs(APIView):
     
@@ -94,3 +95,27 @@ class StatsPerTopic(APIView):
             max_salary = Max('salary')
         )
         return Response({'stats': stats}, status=status.HTTP_200_OK)
+    
+class AppliedToJob(APIView):
+
+    def post(self, request, id):
+        print("*****************")
+        print(id, request)
+        user = request.user
+        job = Job.objects.filter(Job.id == id)
+        if user.userprofile.resume == '':
+            return Response({'error': 'Please upload resume'}, status=status
+                            .HTTP_400_BAD_REQUEST)
+        alreadyApplied = job.candidatesapplied_set.filter(user=user).exists()
+        if alreadyApplied:
+            return Response({'error': 'You already applied to this job'}, status=status.
+                            HTTP_400_BAD_REQUEST)
+        jobApplied = CandidateApplied.objects.create(
+            job = job,
+            user = user,
+            resume = user.userprofile.resume
+        )
+        return Response({
+            'applied': True,
+            'job_id': jobApplied.id
+        }, status=status.HTTP_200_OK)

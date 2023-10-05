@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import make_password
 from .serializers import SignUpSerializer, UserSerializer
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.parsers import FileUploadParser
 
 class Register(APIView):
 
@@ -55,6 +55,12 @@ class UpdateUser(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({'message': "Error updated"}, status=status.HTTP_400_BAD_REQUEST)
 
+class UploadResume(APIView):
 
+    parser_classes = [FileUploadParser]
 
+    def patch(self, request, format=None):
+        file_obj = request.data['resume']
+        return Response(status=status.HTTP_200_OK)
+    
 
